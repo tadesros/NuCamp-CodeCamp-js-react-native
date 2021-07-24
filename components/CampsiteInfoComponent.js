@@ -32,6 +32,7 @@ class CampsiteInfo extends Component {
 	};
 
 	render() {
+		console.log("This is the test");
 		//Receive the parameter id
 		const campsiteId = this.props.navigation.getParam("campsiteId");
 		//Pull out campsite object from array with filter
