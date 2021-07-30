@@ -19,6 +19,24 @@ import { createDrawerNavigator, DrawerItems } from "react-navigation-drawer";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
 import { Icon } from "react-native-elements";
 import SafeAreaView from "react-native-safe-area-view";
+import { connect } from "react-redux";
+
+//Import Thunk action creators
+import {
+	fetchCampsites,
+	fetchComments,
+	fetchPromotions,
+	fetchPartners,
+} from "../redux/ActionCreators";
+
+//Create map dispatch to props object
+//allows access action creators
+const mapDispatchToProps = {
+	fetchCampsites,
+	fetchComments,
+	fetchPromotions,
+	fetchPartners,
+};
 
 const DirectoryNavigator = createStackNavigator(
 	{
@@ -139,7 +157,6 @@ const CustomDrawerContentComponent = (props) => (
 			forceInset={{ top: "always", horizontal: "never" }}
 		>
 			<View style={styles.drawerHeader}>
-				
 				<View style={{ flex: 1 }}>
 					<Image
 						source={require("./images/logo.png")}
@@ -150,12 +167,11 @@ const CustomDrawerContentComponent = (props) => (
 					<Text style={styles.drawerHeaderText}>NuCamp</Text>
 				</View>
 			</View>
-	        	
+
 			<DrawerItems {...props} />
 		</SafeAreaView>
 	</ScrollView>
 );
-
 
 //First parameter screen
 //second drawer background color
@@ -216,6 +232,14 @@ const MainNavigator = createDrawerNavigator(
 const AppNavigator = createAppContainer(MainNavigator);
 
 class Main extends Component {
+	//Call each action creator after loaded
+	componentDidMount() {
+		this.props.fetchCampsites();
+		this.props.fetchComments();
+		this.props.fetchPromotions();
+		this.props.fetchPartners();
+	}
+
 	render() {
 		return (
 			<View
@@ -261,4 +285,5 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default Main;
+//First argument null we don't have map state to props argument
+export default connect(null, mapDispatchToProps)(Main);

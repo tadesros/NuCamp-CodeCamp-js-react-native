@@ -1,15 +1,23 @@
 import React, { Component } from "react";
 import { Text, View, ScrollView, FlatList } from "react-native";
-import { Card,Icon } from "react-native-elements";
-import { CAMPSITES } from "../shared/campsites";
-import { COMMENTS } from "../shared/comments";
+import { Card, Icon } from "react-native-elements";
+import { connect } from "react-redux";
+import { baseUrl } from "../shared/baseUrl";
 
+//Function: receives state as a prop and returns partner data
+//Grab only desired part of state
+//Pass to connect later
+const mapStateToProps = (state) => {
+	return {
+		campsites: state.campsites,
+		comments: state.comments,
+	};
+};
 
 //RenderCampsite Component
 //Pass in entire props
 function RenderCampsite(props) {
-
-    //De-structure campsite from props
+	//De-structure campsite from props
 	const { campsite } = props;
 
 	//Check if empty truthy
@@ -17,7 +25,7 @@ function RenderCampsite(props) {
 		return (
 			<Card
 				featuredTitle={campsite.name}
-				image={require("./images/react-lake.jpg")}
+				image={{ uri: baseUrl + campsite.image }}
 			>
 				<Text style={{ margin: 10 }}>{campsite.description}</Text>
 				<Icon
@@ -42,8 +50,7 @@ function RenderCampsite(props) {
 //RenderComments Component
 //Functional send comments array de-structured
 function RenderComments({ comments }) {
-	
-	//Function to renderCommentItem 
+	//Function to renderCommentItem
 	const renderCommentItem = ({ item }) => {
 		return (
 			<View style={{ margin: 10 }}>
@@ -56,48 +63,42 @@ function RenderComments({ comments }) {
 		);
 	};
 
-    return (
-			<Card title='Comments'>
-				<FlatList
+	return (
+		<Card title='Comments'>
+			<FlatList
 				data={comments}
-				//Call Render Comment Item above
-					renderItem={renderCommentItem}
-					keyExtractor={(item) => item.id.toString()}
-				/>
-			</Card>
-		);
+				renderItem={renderCommentItem}
+				keyExtractor={(item) => item.id.toString()}
+			/>
+		</Card>
+	);
 }
 //Campsite Class Component
 class CampsiteInfo extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			campsites: CAMPSITES,
-			comments: COMMENTS,
 			//Current campsite favorite
-			favorite: false
+			favorite: false,
 		};
 	}
-    //Event handler toggle site marked favorite
+	//Event handler toggle site marked favorite
 	markFavorite() {
-		this.setState({favorite: true });
+		this.setState({ favorite: true });
 	}
 	//Set title
 	static navigationOptions = {
 		title: "Campsite Information",
-	}
+	};
 
 	render() {
-		console.log("This is the test");
-		//Receive the parameter id
 		const campsiteId = this.props.navigation.getParam("campsiteId");
-		//Pull out campsite object from array with filter
-		//Array index of zero
-		const campsite = this.state.campsites.filter(
+
+		const campsite = this.props.campsites.campsites.filter(
 			(campsite) => campsite.id === campsiteId
 		)[0];
-		//Set up campsites variable filter out irrelevant records
-		const comments = this.state.comments.filter(
+
+		const comments = this.props.comments.comments.filter(
 			(comment) => comment.campsiteId === campsiteId
 		);
 		return (
@@ -113,4 +114,4 @@ class CampsiteInfo extends Component {
 	}
 }
 
-export default CampsiteInfo;
+export default connect(mapStateToProps)(CampsiteInfo);
