@@ -20,6 +20,7 @@ import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
 import { Icon } from "react-native-elements";
 import SafeAreaView from "react-native-safe-area-view";
 import { connect } from "react-redux";
+import Reservation from "./ReservationComponent";
 
 //Import Thunk action creators
 import {
@@ -147,6 +148,32 @@ const ContactNavigator = createStackNavigator(
 	}
 );
 
+//Reservation Navigator
+const ReservationNavigator = createStackNavigator(
+	{
+		Reservation: { screen: Reservation },
+	},
+	{
+		defaultNavigationOptions: ({ navigation }) => ({
+			headerStyle: {
+				backgroundColor: "#5637DD",
+			},
+			headerTintColor: "#fff",
+			headerTitleStyle: {
+				color: "#fff",
+			},
+			headerLeft: (
+				<Icon
+					name='tree'
+					type='font-awesome'
+					iconStyle={styles.stackIcon}
+					onPress={() => navigation.toggleDrawer()}
+				/>
+			),
+		}),
+	}
+);
+
 //Custom Drawer Content Component
 //Returns view of the drawer\
 //Safe Area View - nothing else laid out iPhoneX
@@ -190,6 +217,15 @@ const MainNavigator = createDrawerNavigator(
 			navigationOptions: {
 				drawerIcon: ({ tintColor }) => (
 					<Icon name='list' type='font-awesome' size={24} color={tintColor} />
+				),
+			},
+		},
+		Reservation: {
+			screen: ReservationNavigator,
+			navigationOptions: {
+				drawerLabel: "Reserve Campsite",
+				drawerIcon: ({ tintColor }) => (
+					<Icon name='tree' type='font-awesome' size={24} color={tintColor} />
 				),
 			},
 		},
