@@ -50,7 +50,7 @@ class About extends Component {
 		};
 
 
- if (this.props.partners.isLoading) {
+    if (this.props.partners.isLoading) {
 		return (
 			<ScrollView>
 				<Mission />

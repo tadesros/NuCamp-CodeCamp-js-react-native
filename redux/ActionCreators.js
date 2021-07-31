@@ -154,3 +154,14 @@ export const addPartners = (partners) => ({
 	type: ActionTypes.ADD_PARTNERS,
 	payload: partners,
 });
+
+export const postFavorite = (campsiteId) => (dispatch) => {
+	setTimeout(() => {
+		dispatch(addFavorite(campsiteId));
+	}, 2000);
+};
+//Return action object with action type and payload
+export const addFavorite = (campsiteId) => ({
+	type: ActionTypes.ADD_FAVORITE,
+	payload: campsiteId,
+});
