@@ -165,3 +165,29 @@ export const addFavorite = (campsiteId) => ({
 	type: ActionTypes.ADD_FAVORITE,
 	payload: campsiteId,
 });
+
+//Week two New Action Creators
+//Action Creator Function: postComment THUNKED
+export const postComment = (campsiteId, rating, author, text) => (dispatch) => {
+	//Log Comments
+	console.log("Post Comment", campsiteId, rating, author, text);
+
+	//New Comment Values
+	const newComment = {
+		campsiteId: campsiteId,
+		rating: rating,
+		author: author,
+		text: text,
+		date: new Date().toISOString(),
+	};
+	//newComment.date = new Date().toISOString();
+	setTimeout(() => {
+		dispatch(addComment(newComment));
+	}, 2000);
+};
+
+//Action Creator Function: addComment Non-Thunked
+export const addComment = (comment) => ({
+	type: ActionTypes.ADD_COMMENT,
+	payload: comment,
+});
