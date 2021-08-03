@@ -191,3 +191,9 @@ export const addComment = (comment) => ({
 	type: ActionTypes.ADD_COMMENT,
 	payload: comment,
 });
+
+//Action Creator Function: Delete a Favorite
+export const deleteFavorite = (campsiteId) => ({
+	type: ActionTypes.DELETE_FAVORITE,
+	payload: campsiteId,
+});
