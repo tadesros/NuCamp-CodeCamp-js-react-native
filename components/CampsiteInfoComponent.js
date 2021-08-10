@@ -7,6 +7,8 @@ import {
 	Button,
 	Modal,
 	StyleSheet,
+	Alert,
+	PanResponder,
 } from "react-native";
 import { Card, Icon, Rating, Input } from "react-native-elements";
 import { connect } from "react-redux";
@@ -35,11 +37,50 @@ const mapDispatchToProps = {
 function RenderCampsite(props) {
 	//De-structure campsite from props
 	const { campsite } = props;
+	//Take distance of object across x-axis return tru < 200
+	//Recognize gesture horizontal drag smaller than 200 pixels
+	const recognizeDrag = ({ dx }) => (dx < -200 ? true : false);
+
+	//Pan responder
+	const panResponder = PanResponder.create({
+		//Responds to gestures on the component
+		onStartShouldSetPanResponder: () => true,
+		onPanResponderEnd: (e, gestureState) => {
+			console.log("pan responder end", gestureState);
+			if (recognizeDrag(gestureState)) {
+				Alert.alert(
+					"Add Favorite",
+					"Are you sure you wish to add " + campsite.name + " to favorites?",
+					[
+						{
+							text: "Cancel",
+							style: "cancel",
+							onPress: () => console.log("Cancel Pressed"),
+						},
+						{
+							text: "OK",
+							onPress: () =>
+								props.favorite
+									? console.log("Already set as a favorite")
+									: props.markFavorite(),
+						},
+					],
+					{ cancelable: false }
+				);
+			}
+			return true;
+		},
+	});
 
 	//Check if empty truthy
 	if (campsite) {
 		return (
-			<Animatable.View animation='fadeInDown' duration={2000} delay={1000}>
+			<Animatable.View
+				animation='fadeInDown'
+				duration={2000}
+				delay={1000}
+				{...panResponder.panHandlers}
+			>
 				<Card
 					featuredTitle={campsite.name}
 					image={{ uri: baseUrl + campsite.image }}
