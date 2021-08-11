@@ -37,6 +37,10 @@ const mapDispatchToProps = {
 function RenderCampsite(props) {
 	//De-structure campsite from props
 	const { campsite } = props;
+	//Create a ref store in view
+	//Point to an animatable component
+	const view = React.createRef();
+
 	//Take distance of object across x-axis return tru < 200
 	//Recognize gesture horizontal drag smaller than 200 pixels
 	const recognizeDrag = ({ dx }) => (dx < -200 ? true : false);
@@ -45,6 +49,15 @@ function RenderCampsite(props) {
 	const panResponder = PanResponder.create({
 		//Responds to gestures on the component
 		onStartShouldSetPanResponder: () => true,
+		onPanResponderGrant: () => {
+			//At end of duration return promise finished
+			//true if successful false if unsuccessful
+			view.current
+				.rubberBand(1000)
+				.then((endState) =>
+					console.log(endState.finished ? "finished" : "canceled")
+				);
+		},
 		onPanResponderEnd: (e, gestureState) => {
 			console.log("pan responder end", gestureState);
 			if (recognizeDrag(gestureState)) {
@@ -79,6 +92,7 @@ function RenderCampsite(props) {
 				animation='fadeInDown'
 				duration={2000}
 				delay={1000}
+				ref={view}
 				{...panResponder.panHandlers}
 			>
 				<Card
